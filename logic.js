@@ -11,46 +11,7 @@
 // Yellow #FFFF00
 // dark orange #ff8c00
 // Red 	#FF0000 
-    // Function to Determine Color of Marker Based on the Magnitude of the Earthquake
-    // function chooseColor(magnitude) {
-    //   switch (true) {
-    //   case magnitude > 5:
-    //       return "#FF0000 ";
-    //   case magnitude > 3:
-    //       return "#ff8c00";
-    //   case magnitude > 1:
-    //       return "#FFFF00";
-    //   default:
-    //       return "#DAF7A6";
-    //   }
-
-// ----------------------------------------------------------------------------------------------------------------
-
-// 2.5 level earthquake in the last week json url
-
-  // feature.geometry.coordinates[2] is the data I want for long and lat
-
-  // d3.json(url).then(function (data) {
-  //   // Once we get a response, send the data.features object to the createFeatures function
-  //   createFeatures(data.features);
-  // }).addto(myMap);
-
-  // d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function (data) {
-//  This function returns the style data for each of the earthquakes we plot on  
-//  the map. We pass the magnitude of the earthquake into two separate functions  
-//  to calculate the color and radius. 
-
-//  function styleInfo(feature) {    
-//   return {      opacity: 1,      
-//   fillOpacity: 1,      fillColor: getColor(feature.geometry.coordinates[2]),      
-//   color: "#000000",      
-//   radius: getRadius(feature.properties.mag),      
-//   stroke: true,      
-//   weight: 0.5    };  
-// };
-// })
-  
-
+// #ADFF2F is green
 
 
 
@@ -61,8 +22,8 @@ var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.ge
 
 // Create the map with our layers
 var map = L.map("map", {
-  center: [-33.4500, -70.667],
-  zoom: 10,
+  center: [36.7783, -119.4179],
+  zoom: 4.,
 
 });
 
@@ -76,206 +37,82 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   accessToken: API_KEY
 }).addTo(map);
 
+function getColor(mag) {
+  switch (true) {
+    case mag > 4:
+      return "#E9967A";
+    case mag > 2:
+        return "#FF0000";
+    case mag > 0.4:
+      return "#EE9C00";
+    case mag > 1.5:
+      return "#E9967A";
+    case mag > 0:
+      return "#FFFF00";
+    default:
+      return "#ADFF2F";
+  }
+}
+
+
+function getRadius(mag) {
+  switch (true) {
+    case mag > 6:
+      return 18;
+    case mag > 3:
+      return 14;
+    case mag > 1.5:
+      return 10;
+    case mag > 0.5:
+      return 9;
+    default:
+      return 4;
+
+  }
+
+  // return mag*1.3
+}
+
+
+function styleInfo(feature) {
+  return {
+    opacity: 1,
+    fillOpacity: 1,
+    fillColor: getColor(feature.properties.mag),
+    color: "#000000",
+    radius: getRadius(feature.properties.mag),
+    stroke: true,
+    weight: 0.6
+  };
+}
+
+
 // Grabbing our GeoJSON data..
 d3.json(url, function(error, data) {
-  // console.log(data.features[0].geometry.coordinates[2]);
-
-  // simply addding to the map but works
-  // L.geoJSON(data.features).addTo(map);
-// Now put conditions
-  L.circle(data.features, {
-    fillOpacity: 0.75,
-    color: "#FFFF00",
-    fillColor: color,
-    // Adjust radius
-    radius: 10000000
-  }).addTo(map);
-  
-//   {
-//     style: function(feature) {
-
-//         switch (data.features.geometry.coordinates) {
-//             case (data.features.geometry.coordinates[2] > 5): return {color: "#FF0000"};
-//             case (data.features[i].geometry.coordinates[2] <= 5): return {color: "#FFFF00"};
-//         }
-//     }
-// }).addTo(map);
 
 
-
-
-
-  // Add circles to map
-//   L.circle(data.features, {
-//     fillOpacity: 0.75,
-//     color: "#FFFF00",
-//     fillColor: color,
-//     // Adjust radius
-//     radius: data.features[0].geometry.coordinates[2] *150
-//   }).bindPopup("<h1>" + "countries[i].name" + "</h1> <hr> <h3>Magnitude: coordinate path here"  + "</h3>").addTo(map);
+L.geoJson(data, {
+  // We turn each feature into a circleMarker on the map.
+  pointToLayer: function (feature, latlng) {
+    return L.circleMarker(latlng);
+  },
+  // We set the style for each circleMarker using our styleInfo function.
+  style: styleInfo,
+  // We create a popup for each marker to display the magnitude and location of the earthquake after the marker has been created and styled
+  onEachFeature: function (feature, layer) {
+    layer.bindPopup(
+      "Magnitude: "
+      + feature.properties.mag
+      + "<br>Depth: "
+      + feature.geometry.coordinates[2]
+      + "<br>Location: "
+      + feature.properties.place
+    );
+  }
+}).addTo(map);
 });
-   
-  
 
-// });
 
 
+ 
 
-
-
-
-
-
-
-
-// function onEachFeature(feature, layer) {
-//   layer.bindPopup("<h3>" + feature.geometry.coordinates[2] +
-//     "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
-// }
-
-// // Create a GeoJSON layer containing the features array on the earthquakeData object
-// // Run the onEachFeature function once for each piece of data in the array
-// var earthquakes = L.geoJSON(earthquakeData, {
-//   onEachFeature: onEachFeature
-// });
-
-// function(, latlng) {
-//   return L.marker(latlng);
-// }
-
-
-// L.geoJSON(X).addTo(map);
-
-
-// features.geometry.coordinates
-
-// // Loop through the cities array and create one marker for each city object
-// for (var i = 0; i < data.length; i++) {
-
-//   // Conditionals for countries points
-//   var color = "";
-//   if (data[i].points > 200) {
-//     color = "yellow";
-//   }
-//   else if (countries[i].points > 100) {
-//     color = "blue";
-//   }
-//   else if (countries[i].points > 90) {
-//     color = "green";
-//   }
-//   else {
-//     color = "red";
-//   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// cities in chili
-// Santiago	‑33.4500	‑70.6667, 7007000
-// Concepción	‑36.8200	‑73.0445, 889725
-// Puente Alto	‑33.6167	‑70.5833, 573935
-
-
-// // An array containing each city's name, location, and population // example for popup loop
-// var cities = [{
-//   location: [-33.4500, -70.667],
-//   name: "Santiago",
-//   population: 7007000
-// },
-// {
-//   location: [-36.8200, -73.0445],
-//   name: "Concepción",
-//   population: 889725
-// },
-// {
-//   location: [-33.6167, -70.5833],
-//   name: "Puente Alto",
-//   population: 573935
-// },
-
-// ];
-
-
-// // example loop for popup
-// for (var i = 0; i < cities.length; i++) {
-//   var city = cities[i];
-//   L.marker(city.location)
-//     .bindPopup("<h1>" + city.name + "</h1> <hr> <h3>Population " + city.population + "</h3>")
-//     .addTo(myMap);
-// }
-
-// example circle
-// var circle = L.circle([-33.4500, -70.667], {
-//   color: "green",
-//   fillColor: "#f03",
-//   fillOpacity: 0.8,
-//   radius: 500.0
-// }).addTo(map);
-
-
-// Your data markers should reflect the magnitude of the earthquake in their size and colour. 
-// Earthquakes with higher magnitudes should appear larger and darker in colour.
-// USe the logic for conditional looping to do above
-
-
-
-
-
-
-
-
-// // change variable names
-// for (var i = 0; i < cities.length; i++) {
-
-//   // Create a new station object with properties of both station objects
-//   var city = Object.assign({}, cities[i], population[i]);
-//   // If a city has a different population size then change the color of the 
-//   // circle
-  
-//   if (cities.population < 890000) {
-   
-    
-     
-//     };
-//   }
-
-
-//   // If a station has no bikes available, it's empty
-//   else if (!station.num_bikes_available) {
-//     stationStatusCode = "EMPTY";
-//   }
-//   // If a station is installed but isn't renting, it's out of order
-//   else if (station.is_installed && !station.is_renting) {
-//     stationStatusCode = "OUT_OF_ORDER";
-//   }
-//   // If a station has less than 5 bikes, it's status is low
-//   else if (station.num_bikes_available < 5) {
-//     stationStatusCode = "LOW";
-//   }
-//   // Otherwise the station is normal
-//   else {
-//     stationStatusCode = "NORMAL";
-//   }};
