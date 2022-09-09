@@ -83,15 +83,26 @@ d3.json(url, function(error, data) {
   // simply addding to the map but works
   // L.geoJSON(data.features).addTo(map);
 // Now put conditions
-  L.geoJSON(data.features, {
-    style: function(feature) {
+  L.circle(data.features, {
+    fillOpacity: 0.75,
+    color: "#FFFF00",
+    fillColor: color,
+    // Adjust radius
+    radius: 10000000
+  }).addTo(map);
+  
+//   {
+//     style: function(feature) {
 
-        switch (data.features.geometry.coordinates) {
-            case (data.features.geometry.coordinates[2] > 5): return {color: "#FF0000"};
-            case (data.features[i].geometry.coordinates[2] <= 5): return {color: "#FFFF00"};
-        }
-    }
-}).addTo(map);
+//         switch (data.features.geometry.coordinates) {
+//             case (data.features.geometry.coordinates[2] > 5): return {color: "#FF0000"};
+//             case (data.features[i].geometry.coordinates[2] <= 5): return {color: "#FFFF00"};
+//         }
+//     }
+// }).addTo(map);
+
+
+
 
 
   // Add circles to map
