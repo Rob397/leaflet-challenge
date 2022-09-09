@@ -171,41 +171,6 @@ d3.json(url, function(error, data) {
 
 
 
-// // --------------------------------------------------------------------------------------
-//     // Pull the "stations" property off of response.data
-//     var geometry = data.features;
-  
-//     // Initialize an array to hold bike markers
-//     var coordinates = [];
-  
-//     // Loop through the stations array
-//     for (var index = 0; index < geometry.length; index++) {
-//       var station = geometry[index];
-  
-//       // For each station, create a marker and bind a popup with the station's name
-//       var Marker = L.marker([geometry.coordinates[1], geometry.coordintes[2]])
-//         .bindPopup("<h3>lat " +geometry.coordinates[0]  + "<h3><h3>long" +  geometry.coordintes[1] + "</h3>"
-//         +"<h3><h3>" +  geometry.coordintes[2] + "</h3>");
-  
-//       // Add the marker to the bikeMarkers array
-//       coordinates.push(Marker);
-    
-  
-//     // Create a layer group made from the bike markers array, pass it into the createMap function
-//     createMap(L.layerGroup(bikeMarkers));
-//   }
-// ----------------------------------------------------------------------------------
-
-//   // Add circles to map
-//   L.circle(countries[i].location, {
-//     fillOpacity: 0.75,
-//     color: "white",
-//     fillColor: color,
-//     // Adjust radius
-//     radius: countries[i].points * 1500
-//   }).bindPopup("<h1>" + countries[i].name + "</h1> <hr> <h3>Points: " + countries[i].points + "</h3>").addTo(myMap);
-// }
-
 
 
 
