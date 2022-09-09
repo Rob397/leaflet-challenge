@@ -11,7 +11,7 @@
 // Yellow #FFFF00
 // dark orange #ff8c00
 // Red 	#FF0000 
-    // // Function to Determine Color of Marker Based on the Magnitude of the Earthquake
+    // Function to Determine Color of Marker Based on the Magnitude of the Earthquake
     // function chooseColor(magnitude) {
     //   switch (true) {
     //   case magnitude > 5:
@@ -77,16 +77,66 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(map);
 
 // Grabbing our GeoJSON data..
-d3.json(url).function(data) {
-  // Creating a GeoJSON layer with the retrieved data
-  console.log(data);
-};
+d3.json(url, function(error, data) {
+  // console.log(data.features[0].geometry.coordinates[2]);
+
+  // simply addding to the map but works
+  // L.geoJSON(data.features).addTo(map);
+// Now put conditions
+  L.geoJSON(data.features, {
+    style: function(feature) {
+
+        switch (data.features.geometry.coordinates) {
+            case (data.features.geometry.coordinates[2] > 5): return {color: "#FF0000"};
+            case (data.features[i].geometry.coordinates[2] <= 5): return {color: "#FFFF00"};
+        }
+    }
+}).addTo(map);
+
+
+  // Add circles to map
+//   L.circle(data.features, {
+//     fillOpacity: 0.75,
+//     color: "#FFFF00",
+//     fillColor: color,
+//     // Adjust radius
+//     radius: data.features[0].geometry.coordinates[2] *150
+//   }).bindPopup("<h1>" + "countries[i].name" + "</h1> <hr> <h3>Magnitude: coordinate path here"  + "</h3>").addTo(map);
+});
+   
+  
+
+// });
 
 
 
 
 
 
+
+
+
+
+// function onEachFeature(feature, layer) {
+//   layer.bindPopup("<h3>" + feature.geometry.coordinates[2] +
+//     "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+// }
+
+// // Create a GeoJSON layer containing the features array on the earthquakeData object
+// // Run the onEachFeature function once for each piece of data in the array
+// var earthquakes = L.geoJSON(earthquakeData, {
+//   onEachFeature: onEachFeature
+// });
+
+// function(, latlng) {
+//   return L.marker(latlng);
+// }
+
+
+// L.geoJSON(X).addTo(map);
+
+
+// features.geometry.coordinates
 
 // // Loop through the cities array and create one marker for each city object
 // for (var i = 0; i < data.length; i++) {
@@ -105,6 +155,35 @@ d3.json(url).function(data) {
 //   else {
 //     color = "red";
 //   }
+
+
+
+
+
+// // --------------------------------------------------------------------------------------
+//     // Pull the "stations" property off of response.data
+//     var geometry = data.features;
+  
+//     // Initialize an array to hold bike markers
+//     var coordinates = [];
+  
+//     // Loop through the stations array
+//     for (var index = 0; index < geometry.length; index++) {
+//       var station = geometry[index];
+  
+//       // For each station, create a marker and bind a popup with the station's name
+//       var Marker = L.marker([geometry.coordinates[1], geometry.coordintes[2]])
+//         .bindPopup("<h3>lat " +geometry.coordinates[0]  + "<h3><h3>long" +  geometry.coordintes[1] + "</h3>"
+//         +"<h3><h3>" +  geometry.coordintes[2] + "</h3>");
+  
+//       // Add the marker to the bikeMarkers array
+//       coordinates.push(Marker);
+    
+  
+//     // Create a layer group made from the bike markers array, pass it into the createMap function
+//     createMap(L.layerGroup(bikeMarkers));
+//   }
+// ----------------------------------------------------------------------------------
 
 //   // Add circles to map
 //   L.circle(countries[i].location, {
