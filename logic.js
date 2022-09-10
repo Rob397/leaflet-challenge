@@ -1,26 +1,11 @@
 
-
-
-// Create a map using Leaflet that plots all of the earthquakes from your data set based on their longitude and latitude..
-
-// Include popups that provide additional information about the earthquake when a marker is clicked.Will do later after plots are complete
-
-//--------------------// Earthquakes with higher magnitudes should appear larger and darker in colour.-------------
-
-// colour codes for js
-// Yellow #FFFF00
-// dark orange #ff8c00
-// Red 	#FF0000 
-// #ADFF2F is green
-
-
-
+// Set url for json
 var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 
 // Initialize all of the LayerGroups we'll be using
 
-// Create the map with our layers
+// Create the map with our layers, set zoom centre of map
 var map = L.map("map", {
   center: [36.7783, -119.4179],
   zoom: 4.,
@@ -28,6 +13,7 @@ var map = L.map("map", {
 });
 
 // Add a tile layer
+// connect API KEY with mapbox
 L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
@@ -37,43 +23,48 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   accessToken: API_KEY
 }).addTo(map);
 
+
+//tile function to show magnitude size by color going from green to red
 function getColor(mag) {
   switch (true) {
+    case mag > 6:
+      return "#ff0000";
     case mag > 4:
-      return "#E9967A";
+      return "#ff5900";
     case mag > 2:
-        return "#FF0000";
-    case mag > 0.4:
-      return "#EE9C00";
-    case mag > 1.5:
-      return "#E9967A";
+      return "#ffbf00";
+    case mag > 1:
+      return "#ffd500";
     case mag > 0:
-      return "#FFFF00";
+      return "#aaff00";
     default:
-      return "#ADFF2F";
+      return "#aaff00";
   }
 }
-
+//function to increase the radius of the circl depending on the magnitude 
 
 function getRadius(mag) {
   switch (true) {
     case mag > 6:
-      return 18;
-    case mag > 3:
+      return 20;
+    case mag > 4:
       return 14;
-    case mag > 1.5:
+    case mag > 2:
       return 10;
-    case mag > 0.5:
+    case mag > 1:
       return 9;
+    case mag > 0:
+      return 5;
     default:
-      return 4;
+      return 5;
 
   }
+   // maybe could have used a multiplier for magnitude below instead of case-return method
 
-  // return mag*1.3
 }
 
 
+//uses the magnitude data to input setting for radius and colors by function above
 function styleInfo(feature) {
   return {
     opacity: 1,
@@ -81,7 +72,7 @@ function styleInfo(feature) {
     fillColor: getColor(feature.properties.mag),
     color: "#000000",
     radius: getRadius(feature.properties.mag),
-    stroke: true,
+    stroke: false,
     weight: 0.6
   };
 }
@@ -113,6 +104,24 @@ L.geoJson(data, {
 });
 
 
+var legend = L.control({position: 'bottomright'});
 
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+    magnitudeLevels = [0, 1, 2, 4, 6],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < magnitudeLevels.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(magnitudeLevels[i] + 1) + '"></i> ' +
+            magnitudeLevels[i] + (magnitudeLevels[i + 1] ? '&ndash;' + magnitudeLevels[i + 1] + '<br>' : '+');
+    }
+    // div.innerHTML = labels.join('<br>');
+    return div;
+};
+
+legend.addTo(map);
  
 
